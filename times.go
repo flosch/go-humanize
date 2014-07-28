@@ -20,15 +20,23 @@ const (
 //
 // Time(someT) -> "3 weeks ago"
 func Time(then time.Time) string {
-	now := time.Now()
+	diff := then.Sub(time.Now())
+
+	return TimeDuration(diff)
+}
+
+func TimeDuration(diff time.Duration) string {
+	diff /= time.Second
 
 	lbl := "ago"
-	diff := now.Unix() - then.Unix()
 
-	after := then.After(now)
+	after := diff > 0
+
 	if after {
 		lbl = "from now"
-		diff = then.Unix() - now.Unix()
+		diff += 1
+	} else {
+		diff *= -1
 	}
 
 	switch {
